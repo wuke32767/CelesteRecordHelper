@@ -170,7 +170,7 @@ namespace Celeste.Mod.CelesteRecordHelper.Libraries
         }
     }
     /// <summary>
-    /// Do update logic in DelayedUpdate(), and make Update() blank.
+    /// Do update logic in DelayedUpdate(), and make Update() empty.
     /// </summary>
     public interface RecordComponemtBase
     {
@@ -183,10 +183,11 @@ namespace Celeste.Mod.CelesteRecordHelper.Libraries
     /// <typeparam name="TEntity">Type to be recorded.</typeparam>
     public class EntityRecordComponemt<TEntity> : Component where TEntity : Entity
     {
-        public List<Recorder<TEntity>> rec = new();
+        //not named as recordxxx is because my intellisense prefer to pin this rather than Record<>().
+        public List<Recorder<TEntity>> Tracking = [];
         //mark your component was able to work properly even time is reversed. 
-        public HashSet<Component> stillUpdate = new();
-        public static HashSet<Type> stillUpdateType = new();
+        public HashSet<Component> stillUpdate = [];
+        public static HashSet<Type> stillUpdateType = [];
         /// <summary>
         /// not used now.
         /// </summary>
@@ -206,7 +207,7 @@ namespace Celeste.Mod.CelesteRecordHelper.Libraries
         /// <returns>Return itself, so you can call next Record without repeat this component.</returns>
         public EntityRecordComponemt<TEntity> RecordComponent<C, V>(string name) where C : Component
         {
-            rec.Add(Recorder.CreateComponentRecorder<V, C, TEntity>(name));
+            Tracking.Add(Recorder.CreateComponentRecorder<V, C, TEntity>(name));
             return this;
         }
         /// <summary>
@@ -214,7 +215,7 @@ namespace Celeste.Mod.CelesteRecordHelper.Libraries
         /// </summary>
         public EntityRecordComponemt<TEntity> RecordRefType<V>(params string[] name)
         {
-            rec.Add(Recorder.CreateRefTypeRecorder<V, TEntity>(name));
+            Tracking.Add(Recorder.CreateRefTypeRecorder<V, TEntity>(name));
             return this;
         }
         /// <summary>
@@ -222,7 +223,7 @@ namespace Celeste.Mod.CelesteRecordHelper.Libraries
         /// </summary>
         public EntityRecordComponemt<TEntity> Record<V>(FieldInfo info)
         {
-            rec.Add(new Recorder<V, TEntity>(info));
+            Tracking.Add(new Recorder<V, TEntity>(info));
             return this;
         }
         /// <summary>
@@ -230,7 +231,7 @@ namespace Celeste.Mod.CelesteRecordHelper.Libraries
         /// </summary>
         public EntityRecordComponemt<TEntity> Record<V>(PropertyInfo info)
         {
-            rec.Add(new Recorder<V, TEntity>(info));
+            Tracking.Add(new Recorder<V, TEntity>(info));
             return this;
         }
         /// <summary>
@@ -255,8 +256,8 @@ namespace Celeste.Mod.CelesteRecordHelper.Libraries
         public override void EntityAwake()
         {
             base.EntityAwake();
-            rec.Add(Recorder.CreatePositionRecorder<TEntity>());
-            foreach (var r in rec)
+            Tracking.Add(Recorder.CreatePositionRecorder<TEntity>());
+            foreach (var r in Tracking)
             {
                 r.Awake(EntityAs<TEntity>());
             }
@@ -282,7 +283,7 @@ namespace Celeste.Mod.CelesteRecordHelper.Libraries
         public void TryUpdate()
         {
             var rt = DeltaTime;
-            foreach (var r in rec)
+            foreach (var r in Tracking)
             {
                 r.Update(rt, EntityAs<TEntity>());
             }

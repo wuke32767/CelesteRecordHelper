@@ -13,7 +13,7 @@ namespace Celeste.Mod.RecordHelper
         public override Type SessionType => typeof(RecordHelperModuleSession);
         public static RecordHelperModuleSession Session => (RecordHelperModuleSession)Instance._Session;
 
-        public override Type SaveDataType => typeof(RecordHelperModuleSaveData);
+        public override Type SaveDataType => typeof(RecordHelperModuleSaveData); 
         public static RecordHelperModuleSaveData SaveData => (RecordHelperModuleSaveData)Instance._SaveData;
 
         public RecordHelperModule()

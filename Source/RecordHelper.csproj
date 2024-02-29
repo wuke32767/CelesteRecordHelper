@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
@@ -23,9 +23,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Reference Include="$(CelestePrefix)\Celeste.dll">
+      <Reference Include="$(CelestePrefix)\Celeste-publicized.dll" Condition="'$(MSBuildRuntimeType)'!='Core'">
             <Private>false</Private>
-        </Reference>
+      </Reference>
+      <PackageReference Include="CelesteMod.Publicizer" Version="1.0.0" CelesteAssembly="$(CelestePrefix)\Celeste.dll" Condition="'$(MSBuildRuntimeType)'=='Core'" />
+      <PackageReference Include="System.Runtime" Version="4.3.1" />
         <Reference Include="$(CelestePrefix)\MMHOOK_Celeste.dll">
             <Private>false</Private>
         </Reference>
@@ -44,5 +46,5 @@
         <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
+    
 </Project>

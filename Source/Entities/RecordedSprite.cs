@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Monocle;
 using MonoMod.Utils;
 using System;
+using System.Collections.Generic;
 
 namespace Celeste.Mod.RecordHelper.Entities
 {
@@ -23,7 +24,7 @@ namespace Celeste.Mod.RecordHelper.Entities
         }
     }
 
-    public class RecordedSprite : Sprite,RecordComponemtBase
+    public class RecordedSprite : Sprite, RecordComponemtBase
     {
         public enum RecordList : uint
         {
@@ -38,7 +39,12 @@ namespace Celeste.Mod.RecordHelper.Entities
             Rate = 1 << 6,
         }
         public UniversalRecordComponent<Sprite> rec = new();
-        public RecordedSprite(RecordList recr) : base(null, null)
+        public RecordedSprite(Atlas atlas, string path, RecordList recr = RecordList.All)
+            : base(atlas, path)
+        {
+            construct(recr);
+        }
+        void construct(RecordList recr)
         {
             if (recr.HasFlag(RecordList.OnEvent))
             {
@@ -90,6 +96,11 @@ namespace Celeste.Mod.RecordHelper.Entities
                     .Record<int>("CurrentAnimationFrame")
                     .Record<MTexture>("Texture");
             }
+        }
+
+        public RecordedSprite(RecordList recr = RecordList.All) : base()
+        {
+            construct(recr);
         }
         public override void EntityAwake()
         {
